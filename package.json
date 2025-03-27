@@ -5,6 +5,7 @@
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
+    "build-no-electron": "tsc && rollup -c rollup.config.mjs",
     "build": "npm run clean && tsc && rollup -c rollup.config.mjs && npm run build-electron",
     "build-electron": "rimraf ./electron/build && rimraf ./electron/dist && tsc --project ./electron/tsconfig.json && rollup -c electron/rollup.config.mjs && rimraf ./electron/build",
     "clean": "rimraf ./dist",

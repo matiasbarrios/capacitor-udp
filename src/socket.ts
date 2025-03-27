@@ -21,7 +21,7 @@ const DesktopPlugin = window.CapacitorCustomPlatform?.plugins?.UdpPlugin;
 export const Udp = DesktopPlugin ?? UdpPlugin;
 
 type Events = {
-  receive: CustomEvent<ArrayBuffer>;
+  receive: CustomEvent<{ buffer: ArrayBuffer; remoteAddress: string; remotePort: number }>;
   error: CustomEvent<{ message: string; resultCode?: number }>;
 };
 
@@ -200,9 +200,9 @@ class UdpSocket extends TypedEventTarget {
     this.socket = await Udp.create({ properties });
 
     const promises = [
-      Udp.addListener('receive', ({ socketId, buffer }) => {
+      Udp.addListener('receive', ({ socketId, buffer, remoteAddress, remotePort }) => {
         if (socketId === this.socket.socketId) {
-          const event = new CustomEvent<Events['receive']['detail']>('receive', { detail: UdpSocket.stringToBuffer(buffer) });
+          const event = new CustomEvent<Events['receive']['detail']>('receive', { detail: { buffer: UdpSocket.stringToBuffer(buffer), remoteAddress, remotePort }});
 
           this.dispatchEvent(event);
         }
